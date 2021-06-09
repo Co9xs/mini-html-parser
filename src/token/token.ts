@@ -1,14 +1,21 @@
-type TokenType = "startTag" | "endTag" | "character" |  "DOCTYPE" | "EOF"
+type TokenType = "StartTag" | "EndTag" | "DOCTYPE" | "EOF" | "Character"
 
 export type Token = {
-  Type: TokenType,
-  Literal: string
+  Type: TokenType | null, 
+  Literal: string | null
 }
 
-export const tokens = {
-  LT: "<",
-	GT: ">",
-  ASSIGN: "=",
-  IDENT: "IDENT",
-  BANG : "!"
-} as const
+export const TokenTypes: {
+  [key: string]: TokenType
+} = {
+  DOCTYPE: "DOCTYPE",
+  Start: "StartTag",
+  Char: "Character",
+  End: "EndTag",
+  EOF: "EOF",
+}
+
+export interface TagToken extends Token {
+  tagName: string
+  attr: {[key: string]: number | boolean | string}[]
+}

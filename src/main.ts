@@ -1,5 +1,8 @@
-const test = (value: string) => {
-  console.log(value)
-}
+import { Lexer } from './lexer/lexer'
 
-test('test')
+const input = "<html>test</html>"
+const lexer = new Lexer(input)
+
+for (let i = 0; i < input.length; i++) {
+  console.log(lexer.nextToken())
+}
