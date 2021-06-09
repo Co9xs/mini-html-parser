@@ -40,10 +40,13 @@ export class Lexer {
     switch(this.character) {
       case "<":
         if (this.peekChar() === "/") {
-          token.Type = TokenTypes.End,
+          token.Type = TokenTypes.End
+          token.Literal = this.readTagName()
+        } else if (this.peekChar() === "!") {
+          token.Type = TokenTypes.DOCTYPE
           token.Literal = this.readTagName()
         } else {
-          token.Type = TokenTypes.Start,
+          token.Type = TokenTypes.Start
           token.Literal = this.readTagName()
         }
         break;
