@@ -68,12 +68,10 @@ export class Lexer {
   }
 
   readString(): string {
-    console.log(this.position)
     const position = this.position
-    while (this.character !== "<") {
+    while (this.peekChar() !== "<") {
       this.readChar()
     }
     return this.input.slice(position, this.position + 1)
   }
-  
 }
