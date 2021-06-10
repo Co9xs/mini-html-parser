@@ -14,7 +14,6 @@ export class Lexer {
     this.character = input[this.position]
   }
 
-  // 現在の文字に応じてトークンを生成する
   nextToken(): Token {
     let token: Token = {
       Type: null,
@@ -28,19 +27,11 @@ export class Lexer {
         } else if (this.peekChar() === "!") {
           token.Type = TokenTypes.DOCTYPE
           token.TagName = this.readStartTagName()
-          this.skipWhitespace()
-          const key = this.readKey()
-          this.eatEqual()
-          const value = this.readValue()
-          if (key) token[key] = value
+          this.setAttribute(token)
         } else {
           token.Type = TokenTypes.Start
           token.TagName = this.readStartTagName()
-          this.skipWhitespace()
-          const key = this.readKey() || undefined
-          this.eatEqual()
-          const value = this.readValue()
-          if (key) token[key] = value
+          this.setAttributes(token)
         }
         break;
       case ">":
@@ -57,13 +48,26 @@ export class Lexer {
     return token
   }
 
+  setAttributes(token: Token): void {
+    while(this.character !== ">") {
+      this.setAttribute(token)
+    }
+  }
+
+  setAttribute(token: Token): void {
+    this.skipWhitespace()
+    const key = this.readKey()
+    this.eatEqual()
+    const value = this.readValue()
+    if (key) token[key] = value
+  }
+
   readKey(): string {
     const position = this.position
     this.skipWhitespace()
     while (this.character !== "=" && this.character !== ">" && this.character !== " ") {
       this.readChar()
     }
-    console.log(position, this.position)
     return this.input.slice(position, this.position)
   }
 
@@ -73,17 +77,25 @@ export class Lexer {
     }
   }
 
-  readValue(): string | boolean {
-    const position = this.position
-    this.skipWhitespace()
-    while (this.character !== ">" && this.character !== " ") {
+  eatQuotation() {
+    if (this.character === '"') {
       this.readChar()
     }
-    // 一文字も進んでいないのならkeyだけの属性とみなしてtrueを暗黙的に設定する
-    return position === this.position ? true : this.input.slice(position+1, this.position-1)
   }
 
-  // 現在位置を一文字すすめる(最後はEOF=0)
+  readValue(): string | boolean {
+    this.eatQuotation()
+    const position = this.position
+    do {
+      this.readChar()
+      if (this.character === `"`) {
+        this.eatQuotation()
+        break
+      }
+    } while (this.character !== `"`)
+    return this.input.slice(position, this.position-1)
+  }
+
   readChar(): void {
     if (this.nextPosition >= this.input.length) {
       this.character = EOF
@@ -94,7 +106,6 @@ export class Lexer {
     this.nextPosition += 1
   }
 
-  // 位置は進めずに次の文字だけを返す(先読み)
   peekChar(): string | typeof EOF  {
     if (this.nextPosition >= this.input.length) {
       return EOF
@@ -128,7 +139,6 @@ export class Lexer {
     return this.input.slice(position, this.position + 1)
   }
     
-  // 空白、改行文字の場合は飛ばす
   skipWhitespace() {
     while ([" ", "\n", "\t", "\r"].includes(this.character as string)) {
       this.readChar()
