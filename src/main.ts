@@ -10,7 +10,7 @@ const input = `<!DOCTYPE html>
   <title>Document</title>
 </head>
 <body>
-  
+  Bodyのコンテンツ
 </body>
 </html>
 `

@@ -14,30 +14,7 @@ export class Lexer {
     this.character = input[this.position]
   }
 
-  readChar(): void {
-    if (this.nextPosition >= this.input.length) {
-      this.character = EOF
-    } else {
-      this.character = this.input[this.nextPosition]
-    }
-    this.position = this.nextPosition
-    this.nextPosition += 1
-  }
-
-  peekChar(): string | typeof EOF  {
-    if (this.nextPosition >= this.input.length) {
-      return EOF
-    } else {
-      return this.input[this.nextPosition]
-    }
-  }
-  
-  skipWhitespace() {
-    while ([" ", "\n", "\t", "\r"].includes(this.character as string)) {
-      this.readChar()
-    }
-  }
-
+  // 現在の文字に応じてトークンを生成する
   nextToken(): Token {
     let token: Token = {
       Type: null,
@@ -69,6 +46,27 @@ export class Lexer {
     return token
   }
 
+  // 現在位置を一文字すすめる(最後はEOF=0)
+  readChar(): void {
+    if (this.nextPosition >= this.input.length) {
+      this.character = EOF
+    } else {
+      this.character = this.input[this.nextPosition]
+    }
+    this.position = this.nextPosition
+    this.nextPosition += 1
+  }
+
+  // 位置は進めずに次の文字だけを返す(先読み)
+  peekChar(): string | typeof EOF  {
+    if (this.nextPosition >= this.input.length) {
+      return EOF
+    } else {
+      return this.input[this.nextPosition]
+    }
+  }
+
+  // "<"から始まる時は">"にぶつかるまでタグ名として読む
   readTagName(): string {
     const position = this.position
     while (this.character !== ">") {
@@ -77,11 +75,19 @@ export class Lexer {
     return this.input.slice(position, this.position + 1)
   }
 
+  // "<"にぶつかるまで純粋な文字列として読む
   readString(): string {
     const position = this.position
     while (this.peekChar() !== "<") {
       this.readChar()
     }
     return this.input.slice(position, this.position + 1)
+  }
+    
+  // 空白、改行文字の場合は飛ばす
+  skipWhitespace() {
+    while ([" ", "\n", "\t", "\r"].includes(this.character as string)) {
+      this.readChar()
+    }
   }
 }
