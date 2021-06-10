@@ -18,32 +18,69 @@ export class Lexer {
   nextToken(): Token {
     let token: Token = {
       Type: null,
-      Literal: null
     }
     this.skipWhitespace()
     switch(this.character) {
       case "<":
         if (this.peekChar() === "/") {
           token.Type = TokenTypes.End
-          token.Literal = this.readTagName()
+          token.TagName = this.readEndTagName()
         } else if (this.peekChar() === "!") {
           token.Type = TokenTypes.DOCTYPE
-          token.Literal = this.readTagName()
+          token.TagName = this.readStartTagName()
+          this.skipWhitespace()
+          const key = this.readKey()
+          this.eatEqual()
+          const value = this.readValue()
+          if (key) token[key] = value
         } else {
           token.Type = TokenTypes.Start
-          token.Literal = this.readTagName()
+          token.TagName = this.readStartTagName()
+          this.skipWhitespace()
+          const key = this.readKey() || undefined
+          this.eatEqual()
+          const value = this.readValue()
+          if (key) token[key] = value
         }
         break;
+      case ">":
+        this.readChar()
+        break;
       case EOF:
-        token.Type = TokenTypes.EOF,
-        token.Literal = ""
+        token.Type = TokenTypes.EOF
         break;
       default:
-        token.Type = TokenTypes.Char,
-        token.Literal = this.readString()
+        token.Type = TokenTypes.Char
+        token.Literal = this.readString().trim()
     }
     this.readChar()
     return token
+  }
+
+  readKey(): string {
+    const position = this.position
+    this.skipWhitespace()
+    while (this.character !== "=" && this.character !== ">" && this.character !== " ") {
+      this.readChar()
+    }
+    console.log(position, this.position)
+    return this.input.slice(position, this.position)
+  }
+
+  eatEqual(): void {
+    if (this.character === "=") {
+      this.readChar()
+    }
+  }
+
+  readValue(): string | boolean {
+    const position = this.position
+    this.skipWhitespace()
+    while (this.character !== ">" && this.character !== " ") {
+      this.readChar()
+    }
+    // 一文字も進んでいないのならkeyだけの属性とみなしてtrueを暗黙的に設定する
+    return position === this.position ? true : this.input.slice(position+1, this.position-1)
   }
 
   // 現在位置を一文字すすめる(最後はEOF=0)
@@ -66,19 +103,26 @@ export class Lexer {
     }
   }
 
-  // "<"から始まる時は">"にぶつかるまでタグ名として読む
-  readTagName(): string {
+  readStartTagName(): string {
     const position = this.position
-    while (this.character !== ">") {
+    while (this.character !== " " && this.character !== ">") {
       this.readChar()
     }
-    return this.input.slice(position, this.position + 1)
+    return this.input.slice(position + 1, this.position)
   }
 
-  // "<"にぶつかるまで純粋な文字列として読む
+  readEndTagName(): string {
+    const position = this.position
+    while (this.character !== " " && this.character !== ">") {
+      this.readChar()
+    }
+    return this.input.slice(position + 2, this.position)
+  }
+
   readString(): string {
     const position = this.position
-    while (this.peekChar() !== "<") {
+    this.skipWhitespace()
+    while (this.peekChar() !== "=" && this.peekChar() !== ">" && this.peekChar() !== "<") {
       this.readChar()
     }
     return this.input.slice(position, this.position + 1)

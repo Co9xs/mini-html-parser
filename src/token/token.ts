@@ -2,7 +2,9 @@ type TokenType = "StartTag" | "EndTag" | "DOCTYPE" | "EOF" | "Character"
 
 export type Token = {
   Type: TokenType | null, 
-  Literal: string | null
+  Literal?: string
+  TagName?: string
+  [key: string]: string | boolean
 }
 
 export const TokenTypes: {
@@ -13,9 +15,4 @@ export const TokenTypes: {
   Char: "Character",
   End: "EndTag",
   EOF: "EOF",
-}
-
-export interface TagToken extends Token {
-  tagName: string
-  attr: {[key: string]: number | boolean | string}[]
 }
