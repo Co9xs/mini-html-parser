@@ -17,6 +17,7 @@ export class Lexer {
   nextToken(): Token {
     let token: Token = {
       Type: null,
+      Attributes: []
     }
     this.skipWhitespace()
     switch(this.character) {
@@ -42,7 +43,7 @@ export class Lexer {
         break;
       default:
         token.Type = TokenTypes.Char
-        token.Literal = this.readString().trim()
+        token.Content = this.readString().trim()
     }
     this.readChar()
     return token
@@ -59,7 +60,10 @@ export class Lexer {
     const key = this.readKey()
     this.eatEqual()
     const value = this.readValue()
-    if (key) token[key] = value
+    if (key) token.Attributes.push({
+      name: key,
+      value: value
+    })
   }
 
   readKey(): string {

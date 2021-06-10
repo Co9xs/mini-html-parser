@@ -1,18 +1,21 @@
 type TokenType = "StartTag" | "EndTag" | "DOCTYPE" | "EOF" | "Character"
 
-export type Token = {
-  Type: TokenType | null, 
-  Literal?: string
-  TagName?: string
-  [key: string]: string | boolean
+export type Attribute = {
+  name: string
+  value: string | number | boolean
 }
 
-export const TokenTypes: {
-  [key: string]: TokenType
-} = {
+export type Token = {
+  Type: TokenType | null,
+  Content?: string
+  TagName?: string
+  Attributes?: Attribute[]
+}
+
+export const TokenTypes = {
   DOCTYPE: "DOCTYPE",
   Start: "StartTag",
   Char: "Character",
   End: "EndTag",
   EOF: "EOF",
-}
+} as const

@@ -1,5 +1,7 @@
 import { Lexer } from './lexer/lexer'
-import { TokenTypes } from './token/token'
+import { Parser } from './parser/parser'
+import { Token, TokenTypes } from './token/token'
+
 
 const input = `
 <!DOCTYPE html="true">
@@ -17,6 +19,11 @@ const input = `
 `
 const lexer = new Lexer(input)
 
+const tokens: Token[] = []
+
 for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer.nextToken()) {
-  console.log(token)
+  tokens.unshift(token)
 }
+
+const parser = new Parser(tokens)
+console.log(parser.emit())
