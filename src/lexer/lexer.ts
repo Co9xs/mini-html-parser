@@ -31,12 +31,19 @@ export class Lexer {
       return this.input[this.nextPosition]
     }
   }
+  
+  skipWhitespace() {
+    while ([" ", "\n", "\t", "\r"].includes(this.character as string)) {
+      this.readChar()
+    }
+  }
 
   nextToken(): Token {
     let token: Token = {
       Type: null,
       Literal: null
     }
+    this.skipWhitespace()
     switch(this.character) {
       case "<":
         if (this.peekChar() === "/") {
