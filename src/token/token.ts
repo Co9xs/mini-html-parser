@@ -1,4 +1,4 @@
-type TokenType = "StartTag" | "EndTag" | "DOCTYPE" | "EOF" | "Text"
+type TokenType = "DOCTYPE" | "StartTag" | "EndTag" | "Text" | "EOF"
 
 export type Attribute = {
   name: string
