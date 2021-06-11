@@ -2,30 +2,27 @@ import { Lexer } from './lexer/lexer'
 import { Parser } from './parser/parser'
 import { Token, TokenTypes } from './token/token'
 
-
 const input = `
-<!DOCTYPE html="true">
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" aria-dialog="true" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <p class="mt-2 pb-5 name">段落</p>
-</body>
-</html>
+<div class="container w-100">
+  <p class="button">
+    <a href="https://example.com">link</a>
+  </p>
+</div>
 `
 const lexer = new Lexer(input)
 
 const tokens: Token[] = []
 
-// inputをすべてToken化
+// tokenize input string
 for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer.nextToken()) {
   tokens.unshift(token)
 }
 
-// parserにTokenを渡す
+// parse token to ast
 const parser = new Parser(tokens)
-console.log(parser.emit())
+
+for (let i = 0; i < 7; i++) {
+  parser.emit()
+}
+
+console.log(JSON.stringify(parser.result.pop()))

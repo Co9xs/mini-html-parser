@@ -7,40 +7,44 @@ type Node = {
   tagName?: string,
   children?: Node[]
   attributes?: Attribute[]
+  content?: string
 }
 
 export class Parser {
   tokenStack: Token[]
   nodeStack: Node[]
+  result: any[] = []
   constructor(tokens: Token[]) {
     this.tokenStack = [...tokens]
-    this.nodeStack = []
+    this.nodeStack = [{
+      type: "document",
+      children: []
+    }]
   }
 
   emit() {
     const curToken = this.tokenStack.pop()
-    let nodeLen
+    let lastNode = this.nodeStack[this.nodeStack.length - 1]
     switch(curToken.Type) {
-      case TokenTypes.DOCTYPE:
-        const documentRoot = this.createNode(curToken)
-        this.nodeStack.push(documentRoot)
       case TokenTypes.Start:
         const startNode = this.createNode(curToken)
-        nodeLen = this.nodeStack.length
-        this.nodeStack[0].children.push(startNode)
+        lastNode.children.push(startNode)
         this.nodeStack.push(startNode)
+        break;
       case TokenTypes.Text:
         const textNode = this.createNode(curToken)
-        this.nodeStack[0].children.push(textNode)
+        lastNode.children.push(textNode)
+        break;
       case TokenTypes.End:
         const endNode = this.createNode(curToken)
-        if (this.nodeStack[0].tagName === endNode.tagName) {
-          this.nodeStack.pop()
+        if (lastNode.tagName === endNode.tagName) {
+          this.result.push(this.nodeStack.pop())
         }
+        break;
+      default:
     }
   }
 
-  // createNodeでNodeを作ってnodeStackの先頭の子要素に追加していく
   createNode(token: Token): Node {
     switch(token.Type) {
       case TokenTypes.DOCTYPE:
@@ -65,6 +69,7 @@ export class Parser {
       case TokenTypes.Text:
         return {
           type: 'text',
+          content: token.Content,
           children: []
         }
       case TokenTypes.EOF:
