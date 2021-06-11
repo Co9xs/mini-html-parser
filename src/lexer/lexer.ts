@@ -42,7 +42,7 @@ export class Lexer {
         token.Type = TokenTypes.EOF
         break;
       default:
-        token.Type = TokenTypes.Char
+        token.Type = TokenTypes.Text
         token.Content = this.readString().trim()
     }
     this.readChar()

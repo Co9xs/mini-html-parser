@@ -1,4 +1,4 @@
-type TokenType = "StartTag" | "EndTag" | "DOCTYPE" | "EOF" | "Character"
+type TokenType = "StartTag" | "EndTag" | "DOCTYPE" | "EOF" | "Text"
 
 export type Attribute = {
   name: string
@@ -15,7 +15,7 @@ export type Token = {
 export const TokenTypes = {
   DOCTYPE: "DOCTYPE",
   Start: "StartTag",
-  Char: "Character",
+  Text: "Text",
   End: "EndTag",
   EOF: "EOF",
 } as const

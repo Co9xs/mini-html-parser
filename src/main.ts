@@ -21,9 +21,11 @@ const lexer = new Lexer(input)
 
 const tokens: Token[] = []
 
+// inputをすべてToken化
 for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer.nextToken()) {
   tokens.unshift(token)
 }
 
+// parserにTokenを渡す
 const parser = new Parser(tokens)
 console.log(parser.emit())
