@@ -36,4 +36,6 @@ for (let i = 0; i < tokens.length; i++) {
   parser.emit()
 }
 
-console.log(JSON.stringify(parser.result.pop(), null , " "))
+// print ast as json
+const ast = JSON.stringify(parser.result.pop(), null , " ")
+console.log(ast)
