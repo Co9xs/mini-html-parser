@@ -6,19 +6,13 @@ const input = `
 <!DOCTYPE html="true">
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
 <body>
-  <div class="container w-1080">
-    <p class="link-block w-120">
-      <a href="https://example.com">リンク</a>
-    </p>
-    <ul class="name-list p-0 m-0">
-      <li class="name-list__item">リスト1</li>
-      <li class="name-list__item">リスト2</li>
-      <li class="name-list__item">リスト3</li>
-    </ul>
-  </div>
+  <img src="./hogehoge.png" alt="画像">
 </body>
 </html>
 `
@@ -31,11 +25,14 @@ for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer
 }
 
 // parse token to ast
-const parser = new Parser(tokens)
-for (let i = 0; i < tokens.length; i++) {
-  parser.emit()
-}
+tokens.forEach(token => {
+  console.log(token)
+})
+// const parser = new Parser(tokens)
+// for (let i = 0; i < tokens.length; i++) {
+//   parser.emit()
+// }
 
 // print ast as json
-const ast = JSON.stringify(parser.result.pop(), null , " ")
-console.log(ast)
+// const ast = JSON.stringify(parser.result.pop(), null , " ")
+// console.log(ast)

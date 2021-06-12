@@ -1,5 +1,5 @@
 import { Token, TokenTypes } from "../token/token"
-
+const selfClosingTags = ["br", "input", "img", "hr", "link", "meta"]
 const EOF = 0
 export class Lexer {
   input: string
@@ -30,8 +30,12 @@ export class Lexer {
           token.TagName = this.readStartTagName()
           this.setAttribute(token)
         } else {
-          token.Type = TokenTypes.Start
           token.TagName = this.readStartTagName()
+          if (selfClosingTags.includes(token.TagName)) {
+            token.Type = TokenTypes.SelfClosing
+          } else {
+            token.Type = TokenTypes.Start
+          }
           this.setAttributes(token)
         }
         break;
@@ -57,13 +61,16 @@ export class Lexer {
 
   setAttribute(token: Token): void {
     this.skipWhitespace()
+    this.skipSlash()
     const key = this.readKey()
-    this.eatEqual()
-    const value = this.readValue()
-    if (key) token.Attributes.push({
-      name: key,
-      value: value
-    })
+    if (key) {
+      this.eatEqual()
+      const value = this.readValue()
+      token.Attributes.push({
+        name: key,
+        value: value
+      })
+    }
   }
 
   readKey(): string {
@@ -120,7 +127,7 @@ export class Lexer {
 
   readStartTagName(): string {
     const position = this.position
-    while (this.character !== " " && this.character !== ">") {
+    while (this.character !== " " && this.character !== ">" && this.character !== "/") {
       this.readChar()
     }
     return this.input.slice(position + 1, this.position)
@@ -145,6 +152,12 @@ export class Lexer {
     
   skipWhitespace() {
     while ([" ", "\n", "\t", "\r"].includes(this.character as string)) {
+      this.readChar()
+    }
+  }
+
+  skipSlash() {
+    while (["/"].includes(this.character as string)) {
       this.readChar()
     }
   }

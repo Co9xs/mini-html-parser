@@ -36,6 +36,7 @@ export class Parser {
 
   // In the case of the Text tag, it doesn't have any child elements, so we create a Node, but we don't push it to the nodeStack itself, we just push it to the children of the nodeStack's combat element.
 
+  // tokenTypeがself ClosingだったらTextNodeと同じ用に、子要素には設定するけどそれ自体はpushしない
   emit(): void {
     const curToken = this.tokenStack.pop()
     const lastNode = this.nodeStack[this.nodeStack.length - 1]
