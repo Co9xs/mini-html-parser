@@ -55,6 +55,10 @@ export class Parser {
         const textNode = this.createNode(curToken);
         (lastNode as ElementNode).children.push(textNode)
         break;
+      case TokenTypes.SelfClosing:
+        const selfClosingNode = this.createNode(curToken);
+        (lastNode as ElementNode).children.push(selfClosingNode)
+        break;
       case TokenTypes.End:
         if ((lastNode as ElementNode).tagName === curToken.TagName) {
           this.result.push(this.nodeStack.pop())
@@ -95,6 +99,13 @@ export class Parser {
           content: token.Content,
         }
         return textNode
+      case TokenTypes.SelfClosing:
+        const selfClosingNode: ElementNode = {
+          type: 'element',
+          tagName: token.TagName,
+          attributes: token.Attributes,
+        }
+        return selfClosingNode
       default:
     }
   }
