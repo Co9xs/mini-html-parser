@@ -6,7 +6,7 @@ interface Node {
   type: NodeType
 }
 
-interface RootNode extends Node {
+export interface RootNode extends Node {
   type: 'document',
   tagName: '!DOCTYPE',
   children:  (ElementNode | TextNode)[],

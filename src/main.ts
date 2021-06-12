@@ -1,3 +1,4 @@
+import { Evaluator } from './evaluator/evaluator'
 import { Lexer } from './lexer/lexer'
 import { Parser } from './parser/parser'
 import { Token, TokenTypes } from './token/token'
@@ -20,7 +21,7 @@ const input = `
 </html>
 `
 
-// tokenize input string
+// tokenize input string and unshift to token array.(order: EOF → DOCTYPE)
 const lexer = new Lexer(input)
 const tokens: Token[] = []
 for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer.nextToken()) {
@@ -34,5 +35,9 @@ for (let i = 0; i < tokens.length; i++) {
 }
 
 // print ast as json
-const ast = JSON.stringify(parser.ast, null , " ")
-console.log(ast)
+const astJson = JSON.stringify(parser.ast, null, " ")
+console.log(astJson)
+
+// pass ast to evaluator
+const ast = parser.ast
+const evaluator = new Evaluator(ast)
