@@ -20,6 +20,7 @@ const input = `
 // tokenize input string
 const lexer = new Lexer(input)
 const tokens: Token[] = []
+
 for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer.nextToken()) {
   tokens.unshift(token)
 }
@@ -31,5 +32,5 @@ for (let i = 0; i < tokens.length; i++) {
 }
 
 // print ast as json
-const ast = JSON.stringify(parser.result.pop(), null , " ")
+const ast = JSON.stringify(parser.resultStack.pop(), null , " ")
 console.log(ast)

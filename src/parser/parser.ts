@@ -19,24 +19,14 @@ interface TextNode extends Node {
 export class Parser {
   tokenStack: Token[]
   nodeStack: (ElementNode | TextNode)[]
-  result: (ElementNode | TextNode)[]
+  resultStack: (ElementNode | TextNode)[]
 
-  // pass tokens to tokenStack
   constructor(tokens: Token[]) {
     this.tokenStack = [...tokens]
     this.nodeStack = []
-    this.result = []
+    this.resultStack = []
   }
 
-  // The emit function checks the beginning of the tokenStack.(ex: stack.pop())
-  // In the case of startTag, it creates a Node, push it to children of the nodeStack's beginning element, and then push the created Node itself to the nodeStack.
-
-  // For the endTag, we do not create a Node, but check the tag name of the current Token and the tag name of the first element of the nodeStack, and if they match, we move the first element of the nodeStack to the resultStack.
-  // If the tag names do not match it will throw an error, because it means there is no corresponding closing tag.
-
-  // In the case of the Text tag, it doesn't have any child elements, so we create a Node, but we don't push it to the nodeStack itself, we just push it to the children of the nodeStack's combat element.
-
-  // tokenTypeがself ClosingだったらTextNodeと同じ用に、子要素には設定するけどそれ自体はpushしない
   emit(): void {
     const curToken = this.tokenStack.pop()
     const lastNode = this.nodeStack[this.nodeStack.length - 1]
@@ -44,7 +34,7 @@ export class Parser {
       case TokenTypes.DOCTYPE:
         const rootNode = this.createNode(curToken);
         this.nodeStack.push(rootNode)
-        this.result.push(rootNode)
+        this.resultStack.push(rootNode)
         break;
       case TokenTypes.Start:
         const startNode = this.createNode(curToken);
@@ -61,9 +51,9 @@ export class Parser {
         break;
       case TokenTypes.End:
         if ((lastNode as ElementNode).tagName === curToken.TagName) {
-          this.result.push(this.nodeStack.pop())
+          this.resultStack.push(this.nodeStack.pop())
           if (this.nodeStack.length === 1) {
-            this.result.push(this.nodeStack[0])
+            this.resultStack.push(this.nodeStack[0])
           }
         } else {
           throw new Error("No corresponding closing tag.")
@@ -72,9 +62,6 @@ export class Parser {
       default:
     }
   }
-
-  // Create a Node corresponding to the given token.
-  // In the case of EndTag, there is no need to create a Node, so there is no case branch.
   
   createNode(token: Token): ElementNode | TextNode {
     switch(token.Type) {
