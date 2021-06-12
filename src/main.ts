@@ -3,7 +3,7 @@ import { Parser } from './parser/parser'
 import { Token, TokenTypes } from './token/token'
 
 const input = `
-<!DOCTYPE html="true">
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,8 @@ const input = `
   <title>Document</title>
 </head>
 <body>
-  <img src="./hogehoge.png" alt="画像"/>
+  <img src="./hogehoge.png" alt="画像">
+  <button class="cta-button aaa" disabled>ボタンです</button>
 </body>
 </html>
 `

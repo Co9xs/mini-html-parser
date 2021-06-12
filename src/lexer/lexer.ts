@@ -28,7 +28,7 @@ export class Lexer {
         } else if (this.peekChar() === "!") {
           token.Type = TokenTypes.DOCTYPE
           token.TagName = this.readStartTagName()
-          this.setAttribute(token)
+          this.setAttributes(token)
         } else {
           token.TagName = this.readStartTagName()
           if (selfClosingTags.includes(token.TagName)) {
@@ -63,12 +63,19 @@ export class Lexer {
     this.skipWhitespace()
     this.skipSlash()
     const key = this.readKey()
-    if (key) {
+    // keyを読んだあとに、現在の文字が"="であればkey=valueの属性として解析
+    if (key && this.character === "=") {
       this.eatEqual()
       const value = this.readValue()
       token.Attributes.push({
         name: key,
         value: value
+      })
+    // keyを読んだあとに、現在の文字が " " or ">" であればkeyのみの属性として解析
+    } else if (key && (this.character === ">" || this.character === " ")) {
+      token.Attributes.push({
+        name: key,
+        value: true
       })
     }
   }
