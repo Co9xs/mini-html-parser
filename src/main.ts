@@ -13,7 +13,9 @@ const input = `
 </head>
 <body>
   <img src="./hogehoge.png" alt="画像">
-  <button class="cta-button aaa" disabled>ボタンです</button>
+  <button class="cta-button aaa" disabled>ボタン</button>
+  <a href="https://example.com" aria-dialog class="link-test">リンク</a><br/>
+  <hr/>
 </body>
 </html>
 `
