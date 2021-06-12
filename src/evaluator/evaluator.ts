@@ -1,5 +1,4 @@
 import { RootNode, ElementNode, TextNode } from "../parser/parser"
-
 export class Evaluator {
   ast: RootNode
 
