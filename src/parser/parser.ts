@@ -6,8 +6,15 @@ interface Node {
   type: NodeType
 }
 
+interface RootNode extends Node {
+  type: 'document',
+  tagName: '!DOCTYPE',
+  children:  (ElementNode | TextNode)[],
+  attributes?: Attribute[]
+}
+
 interface ElementNode extends Node {
-  type: 'document' | 'element'
+  type: 'element'
   tagName: string
   children?: (ElementNode | TextNode)[]
   attributes?: Attribute[]
@@ -20,12 +27,13 @@ interface TextNode extends Node {
 
 export class Parser {
   tokenStack: Token[]
-  nodeStack: (ElementNode | TextNode)[]
-  ast: any
+  nodeStack: [RootNode, ...(ElementNode | TextNode)[]]
+  ast: RootNode | null
 
   constructor(tokens: Token[]) {
     this.tokenStack = [...tokens]
-    this.nodeStack = []
+    const rootNode = this.createNode(this.tokenStack[tokens.length -1])
+    this.nodeStack = [rootNode as RootNode]
     this.ast = null
   }
 
@@ -33,22 +41,18 @@ export class Parser {
     const curToken = this.tokenStack.pop()
     const lastNode = this.nodeStack[this.nodeStack.length - 1]
     switch(curToken.Type) {
-      case TokenTypes.DOCTYPE:
-        const rootNode = this.createNode(curToken);
-        this.nodeStack.push(rootNode)
-        break;
       case TokenTypes.Start:
         const startNode = this.createNode(curToken);
-        (lastNode as ElementNode).children.push(startNode);
+        (lastNode as ElementNode).children.push(startNode as ElementNode);
         this.nodeStack.push(startNode)
         break;
       case TokenTypes.Text:
         const textNode = this.createNode(curToken);
-        (lastNode as ElementNode).children.push(textNode)
+        (lastNode as ElementNode).children.push(textNode as TextNode)
         break;
       case TokenTypes.SelfClosing:
         const selfClosingNode = this.createNode(curToken);
-        (lastNode as ElementNode).children.push(selfClosingNode)
+        (lastNode as ElementNode).children.push(selfClosingNode as ElementNode)
         break;
       case TokenTypes.End:
         // 現在のtokenとnodeStackの先頭要素を比較して対応していれば、nodeStackからpopする
@@ -66,10 +70,10 @@ export class Parser {
     }
   }
   
-  createNode(token: Token): ElementNode | TextNode {
+  createNode(token: Token): RootNode | ElementNode | TextNode {
     switch(token.Type) {
       case TokenTypes.DOCTYPE:
-        const rootNode: ElementNode = {
+        const rootNode: RootNode = {
           type: 'document',
           tagName: '!DOCTYPE',
           attributes: token.Attributes,

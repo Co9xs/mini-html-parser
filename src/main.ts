@@ -23,7 +23,6 @@ const input = `
 // tokenize input string
 const lexer = new Lexer(input)
 const tokens: Token[] = []
-
 for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer.nextToken()) {
   tokens.unshift(token)
 }
