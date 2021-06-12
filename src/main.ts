@@ -26,12 +26,11 @@ for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer
 }
 
 // parse token to ast
-console.log(tokens)
 const parser = new Parser(tokens)
 for (let i = 0; i < tokens.length; i++) {
   parser.emit()
 }
 
 // print ast as json
-const ast = JSON.stringify(parser.resultStack.pop(), null , " ")
+const ast = JSON.stringify(parser.ast, null , " ")
 console.log(ast)

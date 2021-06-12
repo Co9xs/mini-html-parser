@@ -21,12 +21,12 @@ interface TextNode extends Node {
 export class Parser {
   tokenStack: Token[]
   nodeStack: (ElementNode | TextNode)[]
-  resultStack: (ElementNode | TextNode)[]
+  ast: any
 
   constructor(tokens: Token[]) {
     this.tokenStack = [...tokens]
     this.nodeStack = []
-    this.resultStack = []
+    this.ast = null
   }
 
   emit(): void {
@@ -36,7 +36,6 @@ export class Parser {
       case TokenTypes.DOCTYPE:
         const rootNode = this.createNode(curToken);
         this.nodeStack.push(rootNode)
-        this.resultStack.push(rootNode)
         break;
       case TokenTypes.Start:
         const startNode = this.createNode(curToken);
@@ -52,10 +51,12 @@ export class Parser {
         (lastNode as ElementNode).children.push(selfClosingNode)
         break;
       case TokenTypes.End:
+        // 現在のtokenとnodeStackの先頭要素を比較して対応していれば、nodeStackからpopする
         if ((lastNode as ElementNode).tagName === curToken.TagName) {
-          this.resultStack.push(this.nodeStack.pop())
+          this.nodeStack.pop()
+          // 最後の一つの要素(rootNode)だけになったらastとして返す
           if (this.nodeStack.length === 1) {
-            this.resultStack.push(this.nodeStack[0])
+            this.ast = this.nodeStack[0]
           }
         } else {
           throw new Error("No corresponding closing tag.")
