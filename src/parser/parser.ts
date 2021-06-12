@@ -13,14 +13,14 @@ export interface RootNode extends Node {
   attributes?: Attribute[]
 }
 
-interface ElementNode extends Node {
+export interface ElementNode extends Node {
   type: 'element'
   tagName: string
   children?: (ElementNode | TextNode)[]
   attributes?: Attribute[]
 }
 
-interface TextNode extends Node {
+export interface TextNode extends Node {
   type: 'text'
   content: string
 }

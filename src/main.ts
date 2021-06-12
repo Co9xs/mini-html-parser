@@ -36,8 +36,9 @@ for (let i = 0; i < tokens.length; i++) {
 
 // print ast as json
 const astJson = JSON.stringify(parser.ast, null, " ")
-console.log(astJson)
+// console.log(astJson)
 
 // pass ast to evaluator
 const ast = parser.ast
 const evaluator = new Evaluator(ast)
+evaluator.eval([ast])
