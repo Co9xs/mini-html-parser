@@ -1,18 +1,20 @@
 import { Attribute, Token, TokenTypes } from "../token/token"
 
-type NodeType = 'document' | 'element' | 'text' | 'EOF'
+type NodeType = 'document' | 'element' | 'text'
 
 interface Node {
   type: NodeType
 }
 
 interface ElementNode extends Node {
+  type: 'document' | 'element'
   tagName: string
   children?: (ElementNode | TextNode)[]
   attributes?: Attribute[]
 }
 
 interface TextNode extends Node {
+  type: 'text'
   content: string
 }
 
@@ -69,6 +71,7 @@ export class Parser {
         const rootNode: ElementNode = {
           type: 'document',
           tagName: '!DOCTYPE',
+          attributes: token.Attributes,
           children: []
         }
         return rootNode

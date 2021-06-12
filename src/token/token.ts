@@ -6,7 +6,7 @@ export type Attribute = {
 }
 
 export type Token = {
-  Type: TokenType | null,
+  Type: TokenType | null
   Content?: string
   TagName?: string
   Attributes?: Attribute[]

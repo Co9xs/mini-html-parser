@@ -12,7 +12,7 @@ const input = `
   <title>Document</title>
 </head>
 <body>
-  <img src="./hogehoge.png" alt="画像">
+  <img src="./hogehoge.png" alt="画像"/>
 </body>
 </html>
 `
@@ -26,6 +26,7 @@ for (let token = lexer.nextToken(); token.Type !== TokenTypes.EOF; token = lexer
 }
 
 // parse token to ast
+console.log(tokens)
 const parser = new Parser(tokens)
 for (let i = 0; i < tokens.length; i++) {
   parser.emit()
