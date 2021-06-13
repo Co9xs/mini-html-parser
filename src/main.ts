@@ -3,24 +3,13 @@ import { Lexer } from './lexer/lexer'
 import { Parser } from './parser/parser'
 import { Token, TokenTypes } from './token/token'
 
-const jsdom = require("jsdom");
-const { JSDOM } = jsdom;
-
 const input = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
-<body>
-  <img src="./hogehoge.png" alt="画像">
-  <button class="cta-button aaa" disabled>ボタン</button>
-  <a href="https://example.com" aria-dialog class="link-test">リンク</a><br/>
-  <hr/>
-</body>
 </html>
 `
 
@@ -44,4 +33,5 @@ const astJson = JSON.stringify(parser.ast, null, " ")
 // pass ast to evaluator
 const ast = parser.ast
 const evaluator = new Evaluator(ast)
-evaluator.eval([ast])
+const r = evaluator.test()
+console.log(r)
