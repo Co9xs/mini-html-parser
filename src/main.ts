@@ -3,6 +3,9 @@ import { Lexer } from './lexer/lexer'
 import { Parser } from './parser/parser'
 import { Token, TokenTypes } from './token/token'
 
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+
 const input = `
 <!DOCTYPE html>
 <html lang="en">

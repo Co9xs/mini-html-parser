@@ -11,14 +11,22 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: "ts-loader"
+      },
+      {
+        test: /\.node$/,
+        use: 'node-loader'
       }
     ]
   },
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"]
   },
-  target: ["web", "es5"],
+  target: "node",
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
   },
+  externals: {
+    bufferutil: "bufferutil",
+    "utf-8-validate": "utf-8-validate",
+  }
 };
