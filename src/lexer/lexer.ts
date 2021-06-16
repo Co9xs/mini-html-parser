@@ -1,4 +1,4 @@
-import { Token, TokenTypes } from "../token/token"
+import { Token, TokenType } from "../token/token"
 const selfClosingTags = ["br", "input", "img", "hr", "link", "meta"]
 const EOF = 0
 export class Lexer {
@@ -23,18 +23,18 @@ export class Lexer {
     switch(this.character) {
       case "<":
         if (this.peekChar() === "/") {
-          token.Type = TokenTypes.End
+          token.Type = TokenType.End
           token.TagName = this.readEndTagName()
         } else if (this.peekChar() === "!") {
-          token.Type = TokenTypes.DOCTYPE
+          token.Type = TokenType.DOCTYPE
           token.TagName = this.readStartTagName()
           this.setAttributes(token)
         } else {
           token.TagName = this.readStartTagName()
           if (selfClosingTags.includes(token.TagName)) {
-            token.Type = TokenTypes.SelfClosing
+            token.Type = TokenType.SelfClosing
           } else {
-            token.Type = TokenTypes.Start
+            token.Type = TokenType.Start
           }
           this.setAttributes(token)
         }
@@ -43,10 +43,10 @@ export class Lexer {
         this.readChar()
         break;
       case EOF:
-        token.Type = TokenTypes.EOF
+        token.Type = TokenType.EOF
         break;
       default:
-        token.Type = TokenTypes.Text
+        token.Type = TokenType.Text
         token.Content = this.readString().trim()
     }
     this.readChar()

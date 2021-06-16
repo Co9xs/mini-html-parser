@@ -1,4 +1,11 @@
-type TokenType = "DOCTYPE" | "StartTag" | "EndTag" | "SelfClosing" | "Text" | "EOF"
+export enum TokenType {
+  DOCTYPE,
+  Start,
+  Text,
+  End,
+  SelfClosing,
+  EOF
+}
 
 export type Attribute = {
   name: string
@@ -11,12 +18,3 @@ export type Token = {
   TagName?: string
   Attributes?: Attribute[]
 }
-
-export const TokenTypes = {
-  DOCTYPE: "DOCTYPE",
-  Start: "StartTag",
-  Text: "Text",
-  End: "EndTag",
-  SelfClosing: "SelfClosing",
-  EOF: "EOF",
-} as const

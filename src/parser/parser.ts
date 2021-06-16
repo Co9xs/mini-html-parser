@@ -1,4 +1,4 @@
-import { Attribute, Token, TokenTypes } from "../token/token"
+import { Attribute, Token, TokenType } from "../token/token"
 
 type NodeType = 'document' | 'element' | 'text'
 
@@ -41,20 +41,20 @@ export class Parser {
     const curToken = this.tokenStack.pop()
     const lastNode = this.nodeStack[this.nodeStack.length - 1]
     switch(curToken.Type) {
-      case TokenTypes.Start:
+      case TokenType.Start:
         const startNode = this.createNode(curToken);
         (lastNode as ElementNode).children.push(startNode as ElementNode);
         this.nodeStack.push(startNode)
         break;
-      case TokenTypes.Text:
+      case TokenType.Text:
         const textNode = this.createNode(curToken);
         (lastNode as ElementNode).children.push(textNode as TextNode)
         break;
-      case TokenTypes.SelfClosing:
+      case TokenType.SelfClosing:
         const selfClosingNode = this.createNode(curToken);
         (lastNode as ElementNode).children.push(selfClosingNode as ElementNode)
         break;
-      case TokenTypes.End:
+      case TokenType.End:
         // 現在のtokenとnodeStackの先頭要素を比較して対応していれば、nodeStackからpopする
         if ((lastNode as ElementNode).tagName === curToken.TagName) {
           this.nodeStack.pop()
@@ -72,7 +72,7 @@ export class Parser {
   
   createNode(token: Token): RootNode | ElementNode | TextNode {
     switch(token.Type) {
-      case TokenTypes.DOCTYPE:
+      case TokenType.DOCTYPE:
         const rootNode: RootNode = {
           type: 'document',
           tagName: '!DOCTYPE',
@@ -80,7 +80,7 @@ export class Parser {
           children: []
         }
         return rootNode
-      case TokenTypes.Start:
+      case TokenType.Start:
         const elementNode: ElementNode = {
           type: 'element',
           tagName: token.TagName,
@@ -88,13 +88,13 @@ export class Parser {
           children: []
         }
         return elementNode
-      case TokenTypes.Text:
+      case TokenType.Text:
         const textNode: TextNode = {
           type: 'text',
           content: token.Content,
         }
         return textNode
-      case TokenTypes.SelfClosing:
+      case TokenType.SelfClosing:
         const selfClosingNode: ElementNode = {
           type: 'element',
           tagName: token.TagName,
