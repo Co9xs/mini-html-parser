@@ -16,7 +16,7 @@ const input = `
 // tokenize input string and unshift to token array.(order: EOF → DOCTYPE)
 const lexer = new Lexer(input)
 const tokens: Token[] = []
-for (let token = lexer.nextToken(); token.Type !== TokenType.EOF; token = lexer.nextToken()) {
+for (let token = lexer.nextToken(); token.type !== TokenType.EOF; token = lexer.nextToken()) {
   tokens.unshift(token)
 }
 

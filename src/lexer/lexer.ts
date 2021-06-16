@@ -16,25 +16,25 @@ export class Lexer {
 
   nextToken(): Token {
     let token: Token = {
-      Type: null,
-      Attributes: []
+      type: null,
+      attributes: []
     }
     this.skipWhitespace()
     switch(this.character) {
       case "<":
         if (this.peekChar() === "/") {
-          token.Type = TokenType.End
-          token.TagName = this.readEndTagName()
+          token.type = TokenType.End
+          token.tagName = this.readEndTagName()
         } else if (this.peekChar() === "!") {
-          token.Type = TokenType.DOCTYPE
-          token.TagName = this.readStartTagName()
+          token.type = TokenType.DOCTYPE
+          token.tagName = this.readStartTagName()
           this.setAttributes(token)
         } else {
-          token.TagName = this.readStartTagName()
-          if (selfClosingTags.includes(token.TagName)) {
-            token.Type = TokenType.SelfClosing
+          token.tagName = this.readStartTagName()
+          if (selfClosingTags.includes(token.tagName)) {
+            token.type = TokenType.SelfClosing
           } else {
-            token.Type = TokenType.Start
+            token.type = TokenType.Start
           }
           this.setAttributes(token)
         }
@@ -43,11 +43,11 @@ export class Lexer {
         this.readChar()
         break;
       case EOF:
-        token.Type = TokenType.EOF
+        token.type = TokenType.EOF
         break;
       default:
-        token.Type = TokenType.Text
-        token.Content = this.readString().trim()
+        token.type = TokenType.Text
+        token.content = this.readString().trim()
     }
     this.readChar()
     return token
@@ -67,13 +67,13 @@ export class Lexer {
     if (key && this.character === "=") {
       this.eatEqual()
       const value = this.readValue()
-      token.Attributes.push({
+      token.attributes.push({
         name: key,
         value: value
       })
     // keyを読んだあとに、現在の文字が " " or ">" であればkeyのみの属性として解析
     } else if (key && (this.character === ">" || this.character === " ")) {
-      token.Attributes.push({
+      token.attributes.push({
         name: key,
         value: true
       })

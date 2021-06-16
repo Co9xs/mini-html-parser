@@ -13,8 +13,8 @@ export type Attribute = {
 }
 
 export type Token = {
-  Type: TokenType | null
-  Content?: string
-  TagName?: string
-  Attributes?: Attribute[]
+  type: TokenType | null
+  content?: string
+  tagName?: string
+  attributes?: Attribute[]
 }

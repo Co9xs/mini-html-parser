@@ -40,7 +40,7 @@ export class Parser {
   emit(): void {
     const curToken = this.tokenStack.pop()
     const lastNode = this.nodeStack[this.nodeStack.length - 1]
-    switch(curToken.Type) {
+    switch(curToken.type) {
       case TokenType.Start:
         const startNode = this.createNode(curToken);
         (lastNode as ElementNode).children.push(startNode as ElementNode);
@@ -56,7 +56,7 @@ export class Parser {
         break;
       case TokenType.End:
         // 現在のtokenとnodeStackの先頭要素を比較して対応していれば、nodeStackからpopする
-        if ((lastNode as ElementNode).tagName === curToken.TagName) {
+        if ((lastNode as ElementNode).tagName === curToken.tagName) {
           this.nodeStack.pop()
           // 最後の一つの要素(rootNode)だけになったらastとして返す
           if (this.nodeStack.length === 1) {
@@ -71,34 +71,34 @@ export class Parser {
   }
   
   createNode(token: Token): RootNode | ElementNode | TextNode {
-    switch(token.Type) {
+    switch(token.type) {
       case TokenType.DOCTYPE:
         const rootNode: RootNode = {
           type: 'document',
           tagName: '!DOCTYPE',
-          attributes: token.Attributes,
+          attributes: token.attributes,
           children: []
         }
         return rootNode
       case TokenType.Start:
         const elementNode: ElementNode = {
           type: 'element',
-          tagName: token.TagName,
-          attributes: token.Attributes,
+          tagName: token.tagName,
+          attributes: token.attributes,
           children: []
         }
         return elementNode
       case TokenType.Text:
         const textNode: TextNode = {
           type: 'text',
-          content: token.Content,
+          content: token.content,
         }
         return textNode
       case TokenType.SelfClosing:
         const selfClosingNode: ElementNode = {
           type: 'element',
-          tagName: token.TagName,
-          attributes: token.Attributes,
+          tagName: token.tagName,
+          attributes: token.attributes,
         }
         return selfClosingNode
       default:
